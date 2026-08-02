@@ -20,6 +20,7 @@ public class CountApiTest {
 			.baseUri(getProperty("BASE_URI"))
 			.and()
 			.header(header)
+			.log().uri()
 		.when()
 			.get("/dashboard/count")
 		.then()
