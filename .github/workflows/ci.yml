@@ -19,3 +19,11 @@ jobs:
         cache: maven
     - name: Execute API test framework
       run: mvn clean test -DsuiteXmlFile=testNG.xml -Denv=qa
+
+    - name: Upload a Build Artifact
+      if: always()
+      uses: actions/upload-artifact@v7.0.1
+      with:
+        name: Surfire Report
+        path: target/surefire-reports/
+        retention-days: 10
