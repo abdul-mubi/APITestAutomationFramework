@@ -17,5 +17,5 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
+    - name: Execute API test framework
       run: mvn clean test -DsuiteXmlFile=testNG.xml -Denv=qa
