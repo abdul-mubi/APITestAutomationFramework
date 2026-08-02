@@ -5,7 +5,24 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  schedule:
+    - cron: "30 18 * * *"
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "Environment"
+        type: choice
+        options: [qa,uat,dev]
+        default: qa
+        required: true
 
+      suiteXmlFile:
+        description: "testNG XML file"
+        type: choice
+        options: [testNG.xml,sanity.xml,regression.xml,smoke.xml]
+        default: testNG.xml
+        required: true
+    
 jobs:
   RunTest:
     runs-on: ubuntu-latest
@@ -18,7 +35,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Execute API test framework
-      run: mvn clean test -DsuiteXmlFile=testNG.xml -Denv=qa
+      run: mvn clean test -DsuiteXmlFile="${{ github.event.inputs.suiteXmlFile }}" -Denv="${{ github.event.inputs.env }}"
 
     - name: Upload a Build Artifact
       if: always()
