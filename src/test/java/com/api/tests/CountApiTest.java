@@ -3,6 +3,9 @@ package com.api.tests;
 import static org.hamcrest.Matchers.*;
 import java.util.List;
 import org.testng.annotations.Test;
+
+import com.api.util.SpecUtil;
+
 import static com.api.constant.Role.*;
 import static com.api.util.AuthTokenProvider.*;
 import io.restassured.http.Header;
@@ -15,17 +18,12 @@ public class CountApiTest {
 	
 	@Test
 	public void verifyCountApiResponse() {
-		Header header = new Header("Authorization", getToken(FD));
 		Response response = given()
-			.baseUri(getProperty("BASE_URI"))
-			.and()
-			.header(header)
-			.log().uri()
+			.spec(SpecUtil.requestSpecWithAuth(FD))
 		.when()
 			.get("/dashboard/count")
 		.then()
-			.statusCode(200)
-			.time(lessThan(1000L))
+			.spec(SpecUtil.responseSpec_OK())
 			.body("message", equalTo("Success"))
 			.body(matchesJsonSchemaInClasspath("response-schema/CountResponseSchema.json"))
 			.body("data", instanceOf(List.class))
@@ -42,12 +40,11 @@ public class CountApiTest {
 	@Test
 	public void verifyCountApiResponseWithoutToken() {
 		given()
-			.baseUri(getProperty("BASE_URI"))
+		.spec(SpecUtil.requestSpec())
 		.when()
 			.get("/dashboard/count")
 		.then()
-			.statusCode(401)
-			.time(lessThan(1000L))
+			.spec(SpecUtil.responseSpec_TEXT(401))
 			.extract().response();
 	}
 
