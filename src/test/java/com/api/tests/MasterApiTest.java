@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.testng.annotations.Test;
+
+import com.api.util.SpecUtil;
+
 import static com.api.constant.Role.*;
 import static com.api.util.AuthTokenProvider.*;
 import io.restassured.http.Header;
@@ -16,19 +19,12 @@ import static io.restassured.RestAssured.*;
 public class MasterApiTest {
 	@Test
 	public void verifyMasterApiResponse() {
-		Header header = new Header("Authorization", getToken(FD));
 		Response response = given()
-			.baseUri(getProperty("BASE_URI"))
-			.and()
-			.header(header)
-			.log().all()
-			.contentType("") //override the default content type from application/urlencoded to empty
+				.spec(SpecUtil.requestSpecWithOutContent(FD))//override the default content type from application/urlencoded to empty
 		.when()
 			.post("master")
 		.then()
-			.log().all()
-			.statusCode(200)
-			.time(lessThan(1000L))
+			.spec(SpecUtil.responseSpec_OK())
 			.body("$", hasKey("message"))
 			.body("message", equalTo("Success"))
 //			.body(matchesJsonSchemaInClasspath("response-schema/CountResponseSchema.json"))

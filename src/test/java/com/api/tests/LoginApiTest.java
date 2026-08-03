@@ -4,8 +4,7 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 import org.testng.annotations.Test;
 import com.api.pojo.UserCredentials;
-import static com.api.util.ConfigManager.*;
-import io.restassured.http.ContentType;
+import static com.api.util.SpecUtil.*;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
 
@@ -15,19 +14,13 @@ public class LoginApiTest {
 		UserCredentials userCredentials = new UserCredentials("iamfd", "password");
 		
 		Response response = given()
-			.baseUri(getProperty("BASE_URI"))
-			.and()
-			.contentType(ContentType.JSON)
-			.and()
-			.body(userCredentials)
+			.spec(requestSpec(userCredentials))
 		.when()
 			.post("login")
 		.then()
-			.statusCode(200)
-			.time(lessThan(1500L))
+			.spec(responseSpec_OK())
 			.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/LoginResponseSchema.json"))
 			.body("message", equalTo("Success"))
-			.log().all()
 			.extract().response();
 		
 		System.out.println(response.jsonPath().getString("message"));
