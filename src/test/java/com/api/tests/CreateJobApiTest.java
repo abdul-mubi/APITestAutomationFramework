@@ -1,0 +1,32 @@
+package com.api.tests;
+
+import org.testng.annotations.Test;
+import com.api.constant.Role;
+import com.api.pojo.CreateJobApi;
+import com.api.pojo.Customer;
+import com.api.pojo.CustomerAddress;
+import com.api.pojo.CustomerProduct;
+import com.api.pojo.Problems;
+import com.api.util.SpecUtil;
+import static io.restassured.RestAssured.*;
+
+public class CreateJobApiTest {
+	@Test
+	public void createJobApiTest() {
+		Customer customer = new Customer("Abdul", "Hameed", "7502060003", "", "abdulmydeen1996@gmail.com", "");
+		CustomerAddress customer_address = new CustomerAddress("50", "Bhandari", "Bhileshivsle", "Near yellama", "Hennur", "560077", "India", "Karnataka");
+		CustomerProduct customerProduct = new CustomerProduct("2025-12-31T18:30:00.000Z", "97245965485683", "97245965485683", "97245965485683", "2025-12-31T18:30:00.000Z", 1, 2);
+		Problems problems = new Problems(2,"test");
+		Problems[] problemsArray = new Problems[1];
+		problemsArray[0] = problems;
+		CreateJobApi payload = new CreateJobApi(0, 2, 1, 1, customer, customer_address, customerProduct, problemsArray);
+		
+		given()
+			.spec(SpecUtil.requestSpecWithAuth(Role.FD,payload))
+		.when()
+			.post("/job/create")
+		.then()
+			.spec(SpecUtil.responseSpec_OK());
+	}
+
+}
