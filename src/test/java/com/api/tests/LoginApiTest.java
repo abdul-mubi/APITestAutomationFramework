@@ -3,7 +3,9 @@ package com.api.tests;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 import org.testng.annotations.Test;
-import com.api.pojo.UserCredentials;
+
+import com.api.request.model.UserCredentials;
+
 import static com.api.util.SpecUtil.*;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
