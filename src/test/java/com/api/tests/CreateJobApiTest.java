@@ -2,12 +2,21 @@ package com.api.tests;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
+
+import com.api.constant.Model;
+import com.api.constant.OEM;
+import com.api.constant.Platform;
+import com.api.constant.Problem;
+import com.api.constant.Product;
 import com.api.constant.Role;
+import com.api.constant.ServiceLocation;
+import com.api.constant.WarrantyStatus;
 import com.api.request.model.CreateJobApi;
 import com.api.request.model.Customer;
 import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
+import static com.api.util.DateTimeUtil.*;
 import com.api.util.SpecUtil;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
@@ -22,11 +31,11 @@ public class CreateJobApiTest {
 	public void createJobApiTest() {
 		Customer customer = new Customer("Abdul", "Hameed", "7502060003", "", "abdulmydeen1996@gmail.com", "");
 		CustomerAddress customer_address = new CustomerAddress("50", "Bhandari", "Bhileshivsle", "Near yellama", "Hennur", "560077", "India", "Karnataka");
-		CustomerProduct customerProduct = new CustomerProduct("2025-12-31T18:30:00.000Z", "98245965485683", "98245965485683", "98245965485683", "2025-12-31T18:30:00.000Z", 1, 2);
-		Problems problems = new Problems(2,"Battery Issue");
+		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "90245965085683", "90245965085683", "90245965085683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
+		Problems problems = new Problems(Problem.OVERHEATING.getCode(),"Battery Issue");
 		List<Problems> problemsArray = new ArrayList<Problems>();
 		problemsArray.add(problems);
-		CreateJobApi payload = new CreateJobApi(0, 2, 1, 1, customer, customer_address, customerProduct, problemsArray);
+		CreateJobApi payload = new CreateJobApi(ServiceLocation.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), WarrantyStatus.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customer_address, customerProduct, problemsArray);
 		
 		given()
 			.spec(SpecUtil.requestSpecWithAuth(Role.FD,payload))
