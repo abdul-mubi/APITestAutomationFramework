@@ -1,6 +1,7 @@
 package com.api.tests;
 
 import org.hamcrest.Matchers;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.api.constant.Model;
@@ -17,7 +18,7 @@ import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
 import static com.api.util.DateTimeUtil.*;
-import com.api.util.SpecUtil;
+import static com.api.util.SpecUtil.*;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
 
@@ -27,22 +28,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateJobApiTest {
-	@Test
-	public void createJobApiTest() {
+	
+	private CreateJobApi payload;
+	
+	@BeforeMethod(description = "Creating payload for creat job api")
+	public void setup() {
 		Customer customer = new Customer("Abdul", "Hameed", "7502060003", "", "abdulmydeen1996@gmail.com", "");
 		CustomerAddress customer_address = new CustomerAddress("50", "Bhandari", "Bhileshivsle", "Near yellama", "Hennur", "560077", "India", "Karnataka");
 		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "90245965085683", "90245965085683", "90245965085683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
 		Problems problems = new Problems(Problem.OVERHEATING.getCode(),"Battery Issue");
 		List<Problems> problemsArray = new ArrayList<Problems>();
 		problemsArray.add(problems);
-		CreateJobApi payload = new CreateJobApi(ServiceLocation.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), WarrantyStatus.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customer_address, customerProduct, problemsArray);
+		payload = new CreateJobApi(ServiceLocation.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), WarrantyStatus.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customer_address, customerProduct, problemsArray);
+		
+	}
+	
+	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"})
+	public void createJobApiTest() {
 		
 		given()
-			.spec(SpecUtil.requestSpecWithAuth(Role.FD,payload))
+			.spec(requestSpecWithAuth(Role.FD,payload))
 		.when()
 			.post("/job/create")
 		.then()
-			.spec(SpecUtil.responseSpec_OK())
+			.spec(responseSpec_OK())
 			.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobResponseSchema.json"))
 			.body("message", Matchers.equalTo("Job created successfully. "))
 			.body("data.id", Matchers.instanceOf(Integer.class))
