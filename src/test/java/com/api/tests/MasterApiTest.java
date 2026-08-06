@@ -17,9 +17,9 @@ import static com.api.util.ConfigManager.*;
 import static io.restassured.RestAssured.*;
 
 public class MasterApiTest {
-	@Test
+	@Test(description = "Verify the master api is properly generating response", groups= {"api","smoke","regression"})
 	public void verifyMasterApiResponse() {
-		Response response = given()
+		given()
 				.spec(SpecUtil.requestSpecWithOutContent(FD))//override the default content type from application/urlencoded to empty
 		.when()
 			.post("master")
@@ -47,10 +47,7 @@ public class MasterApiTest {
 			.body("data.map_fst_pincode", instanceOf(List.class))
 			
 			
-			.body("data.mst_oem.is_active", everyItem(greaterThanOrEqualTo(1)))
-			.extract().response();
-		
-		System.out.println(response.jsonPath().getMap("data"));
+			.body("data.mst_oem.is_active", everyItem(greaterThanOrEqualTo(1)));
 	}
 
 }
