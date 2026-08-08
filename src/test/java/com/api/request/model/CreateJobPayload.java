@@ -2,7 +2,7 @@ package com.api.request.model;
 
 import java.util.List;
 
-public record CreateJobApi (
+public record CreateJobPayload (
 	 int mst_service_location_id,
 	 int mst_platform_id,
 	 int mst_warrenty_status_id,

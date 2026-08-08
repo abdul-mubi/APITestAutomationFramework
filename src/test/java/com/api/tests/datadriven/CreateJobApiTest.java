@@ -1,4 +1,4 @@
-package com.api.tests;
+package com.api.tests.datadriven;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
@@ -29,22 +29,10 @@ import java.util.List;
 
 public class CreateJobApiTest {
 	
-	private CreateJobPayload payload;
-	
-	@BeforeMethod(description = "Creating payload for creat job api")
-	public void setup() {
-		Customer customer = new Customer("Abdul", "Hameed", "7502060003", "", "abdulmydeen1996@gmail.com", "");
-		CustomerAddress customer_address = new CustomerAddress("50", "Bhandari", "Bhileshivsle", "Near yellama", "Hennur", "560077", "India", "Karnataka");
-		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "90245965085683", "90245965085683", "90245965085683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
-		Problems problems = new Problems(Problem.OVERHEATING.getCode(),"Battery Issue");
-		List<Problems> problemsArray = new ArrayList<Problems>();
-		problemsArray.add(problems);
-		payload = new CreateJobPayload(ServiceLocation.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), WarrantyStatus.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customer_address, customerProduct, problemsArray);
-		
-	}
-	
-	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"})
-	public void createJobApiTest() {
+	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"},
+			dataProviderClass = com.dataproviders.DataProviderUtils.class,
+			dataProvider = "CreateApiDataProvider")
+	public void createJobApiTest(CreateJobPayload payload) {
 		
 		given()
 			.spec(requestSpecWithAuth(Role.FD,payload))

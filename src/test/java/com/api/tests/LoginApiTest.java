@@ -16,7 +16,7 @@ import com.api.constant.Problem;
 import com.api.constant.Product;
 import com.api.constant.ServiceLocation;
 import com.api.constant.WarrantyStatus;
-import com.api.request.model.CreateJobApi;
+import com.api.request.model.CreateJobPayload;
 import com.api.request.model.Customer;
 import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
