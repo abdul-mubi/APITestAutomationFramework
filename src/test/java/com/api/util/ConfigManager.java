@@ -10,6 +10,7 @@ public class ConfigManager {
 	private static String env;
 	static {
 		env = System.getProperty("env","qa");
+		env = env.toLowerCase().trim();
 		switch(env) {
 		case "dev" -> path = "/config/config.dev.properties";
 		case "qa" -> path = "/config/config.qa.properties";
