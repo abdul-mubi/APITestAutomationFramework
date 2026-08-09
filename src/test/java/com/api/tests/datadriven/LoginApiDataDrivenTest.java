@@ -1,4 +1,4 @@
-package com.api.tests;
+package com.api.tests.datadriven;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -22,24 +22,22 @@ import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
 import com.api.request.model.UserCredentials;
+import com.dataproviders.api.bean.UserBean;
 
 import static com.api.util.DateTimeUtil.getDateTime_ISO_UTC_Format;
 import static com.api.util.SpecUtil.*;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
 
-public class LoginApiTest {
-	private UserCredentials userCredentials;
+public class LoginApiDataDrivenTest {
 	
-	@BeforeMethod(description = "Creating payload for login api")
-	public void setup() {
-		userCredentials = new UserCredentials("iamfd", "password");
-	}
-	
-	@Test(description = "Verify the login api response is completely valid", groups= {"api","smoke","regression"})
-	public void loginAPITest() {
+	@Test(description = "Verify the login api response is completely valid", 
+		  groups= {"api","smoke","regression"},
+		  dataProviderClass = com.dataproviders.DataProviderUtils.class,
+		  dataProvider = "LoginApiDataProvider")
+	public void loginAPITest(UserBean userbean) {
 		Response response = given()
-			.spec(requestSpec(userCredentials))
+			.spec(requestSpec(userbean))
 		.when()
 			.post("login")
 		.then()
