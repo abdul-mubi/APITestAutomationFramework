@@ -27,11 +27,11 @@ import static io.restassured.RestAssured.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateJobApiTest {
+public class CreateJobAPIFakerTest {
 	
-	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"},
+	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression","datadriven","faker"},
 			dataProviderClass = com.dataproviders.DataProviderUtils.class,
-			dataProvider = "CreateApiDataProvider")
+			dataProvider = "CreateJobAPIFakerDataProvider")
 	public void createJobApiTest(CreateJobPayload payload) {
 		
 		given()

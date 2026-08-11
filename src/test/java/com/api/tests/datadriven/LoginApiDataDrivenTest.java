@@ -32,7 +32,7 @@ import io.restassured.response.Response;
 public class LoginApiDataDrivenTest {
 	
 	@Test(description = "Verify the login api response is completely valid", 
-		  groups= {"api","smoke","regression"},
+		  groups= {"api","smoke","regression","datadriven","csv"},
 		  dataProviderClass = com.dataproviders.DataProviderUtils.class,
 		  dataProvider = "LoginApiDataProvider")
 	public void loginAPITest(UserBean userbean) {
