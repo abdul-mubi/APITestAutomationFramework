@@ -7,6 +7,10 @@
        <class name="com.api.tests.datadriven.CreateJobCSVDataTest"/>
        <class name="com.api.tests.datadriven.CreateJobAPIFakerTest"/>
        <class name="com.api.tests.datadriven.LoginApiJsonDataDrivenTest"/>
+       <class name="com.api.tests.datadriven.CreateJobAPIJsonDataDrivenTest"/>
+       <class name="com.api.tests.datadriven.LoginApiExcelDataDrivenTest"/>
+       <class name="com.api.tests.datadriven.CreateJobExcelDataTest"/>
+       <class name="com.api.tests.datadriven.CreateJobDBDataTest"/>
     </classes>
   </test>
 </suite>
