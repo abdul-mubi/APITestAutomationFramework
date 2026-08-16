@@ -1,0 +1,30 @@
+package com.database.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import com.database.DatabaseManager;
+import com.database.model.CustomerDBModel;
+
+public class CustomerDao {
+	private static final String CUSTOMER_DETAIL_QUERY = "SELECT * from tr_customer where id=?;";
+	
+	public static CustomerDBModel getCustomerInfo(int customerId) {
+		Connection conn;
+		CustomerDBModel customerDBModel = null;
+		try {
+			conn = DatabaseManager.getConnection();
+			PreparedStatement prepareStatement = conn.prepareStatement(CUSTOMER_DETAIL_QUERY);
+			prepareStatement.setInt(1, customerId);
+			ResultSet resultSet = prepareStatement.executeQuery();
+			while(resultSet.next()) {
+				customerDBModel = new CustomerDBModel(resultSet.getString("first_name"), resultSet.getString("last_name"), resultSet.getString("mobile_number"), resultSet.getString("mobile_number_alt"), resultSet.getString("email_id"), resultSet.getString("email_id_alt"),resultSet.getString("tr_customer_address_id"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return customerDBModel;
+	}
+
+}

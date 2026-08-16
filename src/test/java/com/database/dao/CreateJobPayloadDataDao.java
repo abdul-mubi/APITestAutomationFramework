@@ -9,7 +9,7 @@ import java.util.List;
 import com.database.DatabaseManager;
 import com.dataproviders.api.bean.CreateJobBean;
 
-public class CreateJobDataDao {
+public class CreateJobPayloadDataDao {
 	private static final String SQL_QUERY = 
 			"""
 			SELECT 
