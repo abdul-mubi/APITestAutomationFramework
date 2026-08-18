@@ -19,7 +19,7 @@ on:
       suiteXmlFile:
         description: "testNG XML file"
         type: choice
-        options: [testNG.xml,sanity.xml,regression.xml,smoke.xml]
+        options: [testNG.xml,testNG-datadriven.xml,sanity.xml,regression.xml,smoke.xml]
         default: testNG.xml
         required: true
     
