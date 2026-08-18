@@ -56,6 +56,10 @@ public class CreateJobPayloadDataDao {
 			
 			""";
 	
+	private CreateJobPayloadDataDao() {
+		
+	}
+	
 	public static List<CreateJobBean> getCreateJobPayloadData(){
 		Connection conn = null;
 		ResultSet rs = null;

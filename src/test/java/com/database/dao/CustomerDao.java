@@ -10,6 +10,9 @@ import com.database.model.CustomerDBModel;
 public class CustomerDao {
 	private static final String CUSTOMER_DETAIL_QUERY = "SELECT * from tr_customer where id=?;";
 	
+	private CustomerDao() {
+		
+	}
 	public static CustomerDBModel getCustomerInfo(int customerId) {
 		Connection conn;
 		CustomerDBModel customerDBModel = null;

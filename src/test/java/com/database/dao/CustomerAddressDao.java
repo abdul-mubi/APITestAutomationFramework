@@ -9,8 +9,11 @@ import com.database.DatabaseManager;
 import com.database.model.CustomerAddressDBModel;
 
 public class CustomerAddressDao {
-private static final String CUSTOMER_ADDRESS_QUERY = "SELECT * from tr_customer_address where id=?;";
-	
+	private static final String CUSTOMER_ADDRESS_QUERY = "SELECT * from tr_customer_address where id=?;";
+		
+	private CustomerAddressDao() {
+		
+	}
 	public static CustomerAddressDBModel getCustomerAddressInfo(int customerAddressId) {
 		Connection conn;
 		CustomerAddressDBModel customerAddressDBModel = null;

@@ -18,6 +18,7 @@ import com.api.request.model.Customer;
 import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
+import com.api.response.model.CreateJobResponseModel;
 import com.database.dao.CustomerAddressDao;
 import com.database.dao.CustomerDao;
 import com.database.dao.CustomerJobHeadDao;
@@ -48,7 +49,7 @@ public class CreateJobApiWithDBValidationTest {
 	public void setup() {
 		Customer customer = new Customer("Abdul123", "Hameed", "7502060003", "", "abdulmydeen1996@gmail.com", "");
 		CustomerAddress customer_address = new CustomerAddress("50", "Bhandari", "Bhileshivsle", "Near yellama", "Hennur", "560077", "India", "Karnataka");
-		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "92048360594683", "92048360594683", "92048360594683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
+		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "92048360597683", "92048360597683", "92048360597683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
 		Problems problems = new Problems(Problem.OVERHEATING.getCode(),"Battery Issue");
 		List<Problems> problemsArray = new ArrayList<Problems>();
 		problemsArray.add(problems);
@@ -59,7 +60,7 @@ public class CreateJobApiWithDBValidationTest {
 	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"})
 	public void createJobApiTest() {
 		
-		Response response = given()
+		CreateJobResponseModel createJobResponseModel = given()
 			.spec(requestSpecWithAuth(Role.FD,payload))
 		.when()
 			.post("/job/create")
@@ -69,9 +70,10 @@ public class CreateJobApiWithDBValidationTest {
 			.body("message", Matchers.equalTo("Job created successfully. "))
 			.body("data.id", Matchers.instanceOf(Integer.class))
 			.body("data.mst_service_location_id", Matchers.equalTo(1))
-			.body("data.job_number",Matchers.startsWith("JOB_")).extract().response();
+			.body("data.job_number",Matchers.startsWith("JOB_"))
+			.extract().as(CreateJobResponseModel.class);
 		
-		int customerId = response.jsonPath().getInt("data.tr_customer_id");
+		int customerId = createJobResponseModel.getData().getTr_customer_id();
 		
 		//Customer job head validation
 		CustomerJobHeadDBModel customerJobHeadDBModel = CustomerJobHeadDao.getCustomerJobHeadInfo(customerId);
