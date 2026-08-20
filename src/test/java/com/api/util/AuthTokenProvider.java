@@ -2,6 +2,9 @@ package com.api.util;
 
 import static io.restassured.RestAssured.*;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static com.api.constant.Role.*;
 
 import com.api.constant.Role;
@@ -12,8 +15,12 @@ import io.restassured.module.jsv.JsonSchemaValidator;
 import static com.api.util.ConfigManager.*;
 
 public class AuthTokenProvider {
+	private static Map<Role, String> tokenCache = new ConcurrentHashMap<Role, String>();
 	
 	public static String getToken(Role role) {
+		if(tokenCache.containsKey(role)) {
+			return tokenCache.get(role);
+		}
 		UserCredentials userCred = null;
 		if (role == FD) {
 			userCred = new UserCredentials("iamfd", "password");
@@ -39,6 +46,7 @@ public class AuthTokenProvider {
 							.and()
 							.log().ifValidationFails()
 							.extract().jsonPath().getString("data.token");
+		tokenCache.put(role, token);
 		return token;
 							
 	}
