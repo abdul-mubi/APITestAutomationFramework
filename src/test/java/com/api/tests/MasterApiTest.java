@@ -1,28 +1,33 @@
 package com.api.tests;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.List;
 import java.util.Map;
 
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.api.service.MasterService;
 import com.api.util.SpecUtil;
 
-import static com.api.constant.Role.*;
-import static com.api.util.AuthTokenProvider.*;
-import io.restassured.http.Header;
-import static io.restassured.module.jsv.JsonSchemaValidator.*;
-import io.restassured.response.Response;
-import static com.api.util.ConfigManager.*;
-import static io.restassured.RestAssured.*;
-
 public class MasterApiTest {
+	private MasterService masterService;
+	
+	@BeforeMethod
+	public void setup() {
+		masterService = new MasterService();
+	}
+	
 	@Test(description = "Verify the master api is properly generating response", groups= {"api","smoke","regression"})
 	public void verifyMasterApiResponse() {
-		given()
-				.spec(SpecUtil.requestSpecWithOutContent(FD))//override the default content type from application/urlencoded to empty
-		.when()
-			.post("master")
+		masterService.master()
 		.then()
 			.spec(SpecUtil.responseSpec_OK())
 			.body("$", hasKey("message"))

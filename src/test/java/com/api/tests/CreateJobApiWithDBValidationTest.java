@@ -19,6 +19,7 @@ import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
 import com.api.response.model.CreateJobResponseModel;
+import com.api.service.JobService;
 import com.database.dao.CustomerAddressDao;
 import com.database.dao.CustomerDao;
 import com.database.dao.CustomerJobHeadDao;
@@ -44,34 +45,32 @@ import java.util.List;
 public class CreateJobApiWithDBValidationTest {
 	
 	private CreateJobPayload payload;
+	private JobService jobService;
 	
 	@BeforeMethod(description = "Creating payload for creat job api")
 	public void setup() {
 		Customer customer = new Customer("Abdul123", "Hameed", "7502060003", "", "abdulmydeen1996@gmail.com", "");
 		CustomerAddress customer_address = new CustomerAddress("50", "Bhandari", "Bhileshivsle", "Near yellama", "Hennur", "560077", "India", "Karnataka");
-		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "92048360597683", "92048360597683", "92048360597683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
+		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "92048360787683", "92048360787683", "92048360787683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
 		Problems problems = new Problems(Problem.OVERHEATING.getCode(),"Battery Issue");
 		List<Problems> problemsArray = new ArrayList<Problems>();
 		problemsArray.add(problems);
 		payload = new CreateJobPayload(ServiceLocation.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), WarrantyStatus.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customer_address, customerProduct, problemsArray);
-		
+		jobService = new JobService();
 	}
 	
 	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"})
 	public void createJobApiTest() {
 		
-		CreateJobResponseModel createJobResponseModel = given()
-			.spec(requestSpecWithAuth(Role.FD,payload))
-		.when()
-			.post("/job/create")
-		.then()
-			.spec(responseSpec_OK())
-			.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobResponseSchema.json"))
-			.body("message", Matchers.equalTo("Job created successfully. "))
-			.body("data.id", Matchers.instanceOf(Integer.class))
-			.body("data.mst_service_location_id", Matchers.equalTo(1))
-			.body("data.job_number",Matchers.startsWith("JOB_"))
-			.extract().as(CreateJobResponseModel.class);
+		CreateJobResponseModel createJobResponseModel = jobService.create(Role.FD, payload)
+														.then()
+														.spec(responseSpec_OK())
+														.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobResponseSchema.json"))
+														.body("message", Matchers.equalTo("Job created successfully. "))
+														.body("data.id", Matchers.instanceOf(Integer.class))
+														.body("data.mst_service_location_id", Matchers.equalTo(1))
+														.body("data.job_number",Matchers.startsWith("JOB_"))
+														.extract().as(CreateJobResponseModel.class);
 		
 		int customerId = createJobResponseModel.getData().getTr_customer_id();
 		

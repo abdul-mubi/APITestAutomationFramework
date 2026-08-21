@@ -1,43 +1,31 @@
 package com.api.tests.datadriven;
 
+import static com.api.util.SpecUtil.responseSpec_OK;
+
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.api.constant.Model;
-import com.api.constant.OEM;
-import com.api.constant.Platform;
-import com.api.constant.Problem;
-import com.api.constant.Product;
 import com.api.constant.Role;
-import com.api.constant.ServiceLocation;
-import com.api.constant.WarrantyStatus;
 import com.api.request.model.CreateJobPayload;
-import com.api.request.model.Customer;
-import com.api.request.model.CustomerAddress;
-import com.api.request.model.CustomerProduct;
-import com.api.request.model.Problems;
-import static com.api.util.DateTimeUtil.*;
-import static com.api.util.SpecUtil.*;
+import com.api.service.JobService;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
 
-import static io.restassured.RestAssured.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class CreateJobAPIFakerTest {
+	private JobService jobService;
+	
+	@BeforeMethod(description = "Instantiate the jobService class")
+	public void setup() {
+		jobService = new JobService();
+	}
 	
 	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression","datadriven","faker"},
 			dataProviderClass = com.dataproviders.DataProviderUtils.class,
 			dataProvider = "CreateJobAPIFakerDataProvider")
 	public void createJobApiTest(CreateJobPayload payload) {
 		
-		given()
-			.spec(requestSpecWithAuth(Role.FD,payload))
-		.when()
-			.post("/job/create")
+		jobService.create(Role.FD, payload)
 		.then()
 			.spec(responseSpec_OK())
 			.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobResponseSchema.json"))

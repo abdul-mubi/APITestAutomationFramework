@@ -1,5 +1,11 @@
 package com.api.tests;
 
+import static com.api.util.DateTimeUtil.getDateTime_ISO_UTC_Format;
+import static com.api.util.SpecUtil.responseSpec_OK;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -17,19 +23,14 @@ import com.api.request.model.Customer;
 import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
-import static com.api.util.DateTimeUtil.*;
-import static com.api.util.SpecUtil.*;
+import com.api.service.JobService;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
-
-import static io.restassured.RestAssured.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CreateJobApiTest {
 	
 	private CreateJobPayload payload;
+	private JobService jobService;
 	
 	@BeforeMethod(description = "Creating payload for creat job api")
 	public void setup() {
@@ -40,16 +41,13 @@ public class CreateJobApiTest {
 		List<Problems> problemsArray = new ArrayList<Problems>();
 		problemsArray.add(problems);
 		payload = new CreateJobPayload(ServiceLocation.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), WarrantyStatus.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customer_address, customerProduct, problemsArray);
-		
+		jobService = new JobService();
 	}
 	
 	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"})
 	public void createJobApiTest() {
 		
-		given()
-			.spec(requestSpecWithAuth(Role.FD,payload))
-		.when()
-			.post("/job/create")
+		jobService.create(Role.FD, payload)
 		.then()
 			.spec(responseSpec_OK())
 			.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobResponseSchema.json"))
