@@ -1,20 +1,11 @@
 package com.api.util;
 
-import static com.api.util.DateTimeUtil.getDateTime_ISO_UTC_Format;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import com.api.constant.Model;
-import com.api.constant.OEM;
-import com.api.constant.Platform;
-import com.api.constant.Problem;
-import com.api.constant.Product;
-import com.api.constant.ServiceLocation;
-import com.api.constant.WarrantyStatus;
 import com.api.request.model.CreateJobPayload;
 import com.api.request.model.Customer;
 import com.api.request.model.CustomerAddress;
@@ -23,6 +14,8 @@ import com.api.request.model.Problems;
 import com.github.javafaker.Faker;
 
 public class FakerDataGenerator {
+
+	@SuppressWarnings("deprecation")
 	private static Faker faker = new Faker(new Locale("en-IND"));
 	private static final String COUNTRY = "India";
 	private static int[] problemId = {1,2,3,4,5,6,7,8,9,10,11,12,15,16,17,19,20,22,24,26,27,28,29};
@@ -36,10 +29,6 @@ public class FakerDataGenerator {
 	
 	private FakerDataGenerator() {
 		
-	}
-	
-	public static void generateFakerCreateJobData() {
-		CreateJobPayload payload = new CreateJobPayload(mst_service_location_id, mst_platform_id, mst_warrenty_status_id, mst_oem_id, generateFakerCustomerData(), generateFakerCustomerAddressData(), generateFakerCustomerProduct(), generateFakerProblem());
 	}
 	
 	public static Iterator<CreateJobPayload> generateFakerCreateJobData(int count) {
@@ -69,9 +58,8 @@ public class FakerDataGenerator {
 	public static CustomerProduct generateFakerCustomerProduct() {
 		String dop = DateTimeUtil.getDateTime_ISO_UTC_Format();
 		String imei_serial_number = faker.numerify("##############");
-		String popurl = faker.internet().url();
 		
-		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), imei_serial_number, imei_serial_number, imei_serial_number, getDateTime_ISO_UTC_Format(), product_id, mst_model_id);
+		CustomerProduct customerProduct = new CustomerProduct(dop, imei_serial_number, imei_serial_number, imei_serial_number, dop, product_id, mst_model_id);
 		return customerProduct;
 	}
 	

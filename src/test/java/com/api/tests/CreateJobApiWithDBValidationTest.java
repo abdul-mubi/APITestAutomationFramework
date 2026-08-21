@@ -1,5 +1,11 @@
 package com.api.tests;
 
+import static com.api.util.DateTimeUtil.getDateTime_ISO_UTC_Format;
+import static com.api.util.SpecUtil.responseSpec_OK;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -31,16 +37,7 @@ import com.database.model.CustomerJobHeadDBModel;
 import com.database.model.CustomerProblemDBModel;
 import com.database.model.CustomerProductDBModel;
 
-import static com.api.util.DateTimeUtil.*;
-import static com.api.util.SpecUtil.*;
-
 import io.restassured.module.jsv.JsonSchemaValidator;
-import io.restassured.response.Response;
-
-import static io.restassured.RestAssured.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CreateJobApiWithDBValidationTest {
 	
