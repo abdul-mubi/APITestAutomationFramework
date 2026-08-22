@@ -4,6 +4,7 @@ import static com.api.util.SpecUtil.responseSpec_OK;
 import static org.hamcrest.Matchers.equalTo;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.request.model.UserCredentials;
@@ -12,6 +13,7 @@ import com.api.service.AuthService;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
 
+@Listeners(com.listeners.APITestListener.class)
 public class LoginApiJsonDataDrivenTest {
 	private AuthService authService;
 	

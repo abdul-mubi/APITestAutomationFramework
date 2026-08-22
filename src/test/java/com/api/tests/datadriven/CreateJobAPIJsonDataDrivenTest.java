@@ -4,6 +4,7 @@ import static com.api.util.SpecUtil.responseSpec_OK;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.constant.Role;
@@ -12,6 +13,7 @@ import com.api.service.JobService;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
 
+@Listeners(com.listeners.APITestListener.class)
 public class CreateJobAPIJsonDataDrivenTest {
 	private JobService jobService;
 	

@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.service.MasterService;
 import com.api.util.SpecUtil;
 
+@Listeners(com.listeners.APITestListener.class)
 public class MasterApiTest {
 	private MasterService masterService;
 	

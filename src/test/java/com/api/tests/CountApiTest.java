@@ -16,12 +16,12 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.util.List;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.service.DashboardService;
 
-import io.restassured.response.Response;
-
+@Listeners(com.listeners.APITestListener.class)
 public class CountApiTest {
 	private DashboardService dashboardService;
 	
