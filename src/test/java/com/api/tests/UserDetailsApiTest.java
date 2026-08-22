@@ -22,14 +22,13 @@ public class UserDetailsApiTest {
 	
 	@Test(description = "Verify the user details api response is completely valid as expectec", groups= {"api","smoke","regression"})
 	public void userDetailsApiTest() {
-		Response response = userService.userdetails(FD)
-							.then()
-							.spec(responseSpec_OK())
-							.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/UserDetailsResponseSchema.json"))
-							.body("message", equalTo("Success"))
-							.extract().response();
+		userService.userdetails(FD)
+		.then()
+		.spec(responseSpec_OK())
+		.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/UserDetailsResponseSchema.json"))
+		.body("message", equalTo("Success"))
+		.extract().response();
 			
-			System.out.println(response.jsonPath().getString("message"));
 	}
 
 }

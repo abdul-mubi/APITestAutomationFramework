@@ -22,14 +22,12 @@ public class LoginApiDataDrivenTest {
 		  dataProviderClass = com.dataproviders.DataProviderUtils.class,
 		  dataProvider = "LoginApiDataProvider")
 	public void loginAPITest(UserBean userbean) {
-		Response response = authService.login(userbean)
-							.then()
-							.spec(responseSpec_OK())
-							.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/LoginResponseSchema.json"))
-							.body("message", equalTo("Success"))
-							.extract().response();
-		
-		System.out.println(response.jsonPath().getString("message"));
+		authService.login(userbean)
+		.then()
+		.spec(responseSpec_OK())
+		.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/LoginResponseSchema.json"))
+		.body("message", equalTo("Success"))
+		.extract().response();
 	}
 
 }
