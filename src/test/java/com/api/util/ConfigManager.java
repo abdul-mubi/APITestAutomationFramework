@@ -7,17 +7,17 @@ public class ConfigManager {
 	
 	private static Properties prop = new Properties();
 	private static String path = "/config/config.properties";
-	private static String env;
+	public static String env;
 	static {
 		env = System.getProperty("env","qa");
 		env = env.toLowerCase().trim();
 		switch(env) {
-		case "dev" -> path = "/config/config.dev.properties";
-		case "qa" -> path = "/config/config.qa.properties";
-		case "uat" -> path = "/config/config.uat.properties";
-		default -> path = "/config/config.qa.properties";
+		case "dev" -> path = "config/config.dev.properties";
+		case "qa" -> path = "config/config.qa.properties";
+		case "uat" -> path = "config/config.uat.properties";
+		default -> path = "config/config.qa.properties";
 		}
-		InputStream in = ConfigManager.class.getResourceAsStream(path);
+		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 		if (in == null) {
 			throw new RuntimeException("File is not found in this path - "+path);
 		}

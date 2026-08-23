@@ -10,9 +10,17 @@ import org.testng.annotations.Test;
 
 import com.api.service.UserService;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import io.restassured.module.jsv.JsonSchemaValidator;
 
 @Listeners(com.listeners.APITestListener.class)
+@Epic("User Management")
+@Feature("User Details")
 public class UserDetailsApiTest {
 	private UserService userService;
 	
@@ -21,6 +29,9 @@ public class UserDetailsApiTest {
 		userService = new UserService();
 	}
 	
+	@Story("Validate User Details API")
+	@Description("Verify the user details api response")
+	@Severity(SeverityLevel.NORMAL)
 	@Test(description = "Verify the user details api response is completely valid as expectec", groups= {"api","smoke","regression"})
 	public void userDetailsApiTest() {
 		userService.userdetails(FD)

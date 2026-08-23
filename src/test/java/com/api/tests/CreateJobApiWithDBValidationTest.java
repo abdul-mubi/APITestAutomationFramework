@@ -38,9 +38,17 @@ import com.database.model.CustomerJobHeadDBModel;
 import com.database.model.CustomerProblemDBModel;
 import com.database.model.CustomerProductDBModel;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import io.restassured.module.jsv.JsonSchemaValidator;
 
 @Listeners(com.listeners.APITestListener.class)
+@Epic("Job Management")
+@Feature("Creating job")
 public class CreateJobApiWithDBValidationTest {
 	
 	private CreateJobPayload payload;
@@ -50,7 +58,7 @@ public class CreateJobApiWithDBValidationTest {
 	public void setup() {
 		Customer customer = new Customer("Abdul123", "Hameed", "7502060003", "", "abdulmydeen1996@gmail.com", "");
 		CustomerAddress customer_address = new CustomerAddress("50", "Bhandari", "Bhileshivsle", "Near yellama", "Hennur", "560077", "India", "Karnataka");
-		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "92048360787683", "92048360787683", "92048360787683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
+		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "92099960787683", "92099960787683", "92099960787683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
 		Problems problems = new Problems(Problem.OVERHEATING.getCode(),"Battery Issue");
 		List<Problems> problemsArray = new ArrayList<Problems>();
 		problemsArray.add(problems);
@@ -58,7 +66,10 @@ public class CreateJobApiWithDBValidationTest {
 		jobService = new JobService();
 	}
 	
-	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"})
+	@Story("Validate create job API")
+	@Description("Verify the create job api response and also DB data")
+	@Severity(SeverityLevel.CRITICAL)
+	@Test(description = "Verify the create job api is creating job properly and perform DB validation", groups= {"api","smoke","regression"})
 	public void createJobApiTest() {
 		
 		CreateJobResponseModel createJobResponseModel = jobService.create(Role.FD, payload)

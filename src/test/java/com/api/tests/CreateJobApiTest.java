@@ -26,9 +26,17 @@ import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
 import com.api.service.JobService;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import io.restassured.module.jsv.JsonSchemaValidator;
 
 @Listeners(com.listeners.APITestListener.class)
+@Epic("Job Management")
+@Feature("Creating job")
 public class CreateJobApiTest {
 	
 	private CreateJobPayload payload;
@@ -38,7 +46,7 @@ public class CreateJobApiTest {
 	public void setup() {
 		Customer customer = new Customer("Abdul", "Hameed", "7502060003", "", "abdulmydeen1996@gmail.com", "");
 		CustomerAddress customer_address = new CustomerAddress("50", "Bhandari", "Bhileshivsle", "Near yellama", "Hennur", "560077", "India", "Karnataka");
-		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "90245965085683", "90245965085683", "90245965085683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
+		CustomerProduct customerProduct = new CustomerProduct(getDateTime_ISO_UTC_Format(), "90247065085683", "90247065085683", "90247065085683", getDateTime_ISO_UTC_Format(), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
 		Problems problems = new Problems(Problem.OVERHEATING.getCode(),"Battery Issue");
 		List<Problems> problemsArray = new ArrayList<Problems>();
 		problemsArray.add(problems);
@@ -46,6 +54,9 @@ public class CreateJobApiTest {
 		jobService = new JobService();
 	}
 	
+	@Story("Validate create job API")
+	@Description("Verify the create job api response")
+	@Severity(SeverityLevel.CRITICAL)
 	@Test(description = "Verify the create job api is creating job properly", groups= {"api","smoke","regression"})
 	public void createJobApiTest() {
 		

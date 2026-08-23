@@ -21,7 +21,12 @@ import org.testng.annotations.Test;
 
 import com.api.service.DashboardService;
 
+import io.qameta.allure.*;
+import io.qameta.allure.Feature;
+
 @Listeners(com.listeners.APITestListener.class)
+@Epic("Job Management")
+@Feature("Count API validation")
 public class CountApiTest {
 	private DashboardService dashboardService;
 	
@@ -30,6 +35,9 @@ public class CountApiTest {
 		dashboardService = new DashboardService();
 	}
 	
+	@Story("Validate count job API")
+	@Description("Verify the count job api response")
+	@Severity(SeverityLevel.NORMAL)
 	@Test(description = "Verify the create count api reponse is completely valid", groups= {"api","smoke","regression"})
 	public void verifyCountApiResponse() {
 		dashboardService.count(FD)
@@ -47,6 +55,9 @@ public class CountApiTest {
 		
 	}
 	
+	@Story("Validate count job API without token")
+	@Description("Verify the count job api response without token")
+	@Severity(SeverityLevel.NORMAL)
 	@Test(description = "Verify the create count api reponse is properly without token", groups= {"api","regression"})
 	public void verifyCountApiResponseWithoutToken() {
 		dashboardService.countWithoutAuth()

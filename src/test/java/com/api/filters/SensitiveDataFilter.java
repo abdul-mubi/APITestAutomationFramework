@@ -21,12 +21,25 @@ public class SensitiveDataFilter implements Filter{
 		LOGGER.info("Request URI - {}", requestSpec.getURI());
 		LOGGER.info("Request METHOD - {}", requestSpec.getMethod());
 		maskSensitiveInfoOnRequestHeader(requestSpec);
-		LOGGER.info("Request BODY - {}", maskSensitiveInfoOnRequestBody(requestSpec));
+		LOGGER.info("Request BODY - \n{}", maskSensitiveInfoOnRequestBody(requestSpec));
 		
 		Response response = ctx.next(requestSpec, responseSpec);
+		LOGGER.info("Response STATUS CODE - {}", response.getStatusCode());
+		LOGGER.info("Response HEADER - \n{}", response.headers());
+		LOGGER.info("Response TIME - {}", response.getTime());
+		maskSensitiveInfoOnResponseBody(response);
 		return response;
 	}
 	
+	private void maskSensitiveInfoOnResponseBody(Response response) {
+		String responseBody = response.getBody().asPrettyString();
+		if(responseBody.contains("token")) {
+			responseBody = responseBody.replaceAll("\"token\": \"[^\"]+\"", "\"token\": [REDACTED]");
+		}
+		LOGGER.info("Response BODY -\n{}",responseBody);
+		
+	}
+
 	private String maskSensitiveInfoOnRequestBody(FilterableRequestSpecification requestSpec) {
 		String payload = requestSpec.getBody();
 		if (payload != null) {
