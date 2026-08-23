@@ -35,7 +35,8 @@ public class LoginApiTest {
 	@Story("Login with valid credentials")
 	@Description("Execute loginAPITest with valid user credentials")
 	@Severity(SeverityLevel.BLOCKER)
-	@Test(description = "Verify the login api response is completely valid", groups= {"api","smoke","regression"})
+	@Test(description = "Verify the login api response is completely valid", groups= {"api","smoke","regression"},
+	retryAnalyzer = com.api.retry.RetryAnalyzer.class)
 	public void loginAPITest() {
 		authService.login(userCredentials)
 		.then()
