@@ -1,0 +1,7 @@
+"Epic","Feature","Story","FAILED","BROKEN","PASSED","SKIPPED","UNKNOWN"
+"User Management","Master Service","Validate Master API","0","0","1","0","0"
+"Job Management","Creating job","Validate create job API","0","1","1","0","0"
+"Job Management","Count API validation","Validate count job API without token","0","0","1","0","0"
+"Job Management","Count API validation","Validate count job API","0","0","1","0","0"
+"User Management","User Details","Validate User Details API","0","0","1","0","0"
+"User Management","Authentication","Login with valid credentials","0","0","1","0","0"
