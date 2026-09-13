@@ -40,7 +40,7 @@ env:
   EC2_SUBNET_ID: subnet-0abcd1234                                     # <-- your subnet
   EC2_SECURITY_GROUP_ID: sg-0abcd1234                                 # <-- your SG
 
-jobs: 
+jobs:
   # ─────────────────────────────────────────────────────────────
   # JOB 1: Launch the Spot instance and register it as a runner
   # ─────────────────────────────────────────────────────────────
