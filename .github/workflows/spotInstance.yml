@@ -1,0 +1,165 @@
+name: run-tests
+
+on:
+  push:
+	branches: [ "master" ]
+  pull_request:
+	branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "TestNG suite to run"
+        type: choice
+        required: true
+        default: "regression.xml"
+        options:
+          - smoke.xml
+          - regression.xml
+          - api.xml
+      env:
+        description: "Target environment"
+        type: choice
+        required: true
+        default: "qa"
+        options:
+          - qa
+          - stage
+          - prod
+
+# Required for OIDC (id-token) and for pushing the report to gh-pages (contents)
+permissions:
+  id-token: write
+  contents: write
+  packages: read
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ROLE_ARN: arn:aws:iam::123456789012:role/github-actions-role   # <-- your role ARN
+  EC2_AMI_ID: ami-XXXXXXXXXX                                   # <-- your Docker AMI
+  EC2_INSTANCE_TYPE: t3.large
+  EC2_SUBNET_ID: subnet-0abcd1234                                     # <-- your subnet
+  EC2_SECURITY_GROUP_ID: sg-0abcd1234                                 # <-- your SG
+
+jobs:
+  # ─────────────────────────────────────────────────────────────
+  # JOB 1: Launch the Spot instance and register it as a runner
+  # ─────────────────────────────────────────────────────────────
+  start-runner:
+    name: Start EC2 Spot runner
+    runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Start EC2 Spot runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          github-token: ${{ secrets.GH_PAT }}
+          ec2-image-id: ${{ env.EC2_AMI_ID }}
+          ec2-instance-type: ${{ env.EC2_INSTANCE_TYPE }}
+          subnet-id: ${{ env.EC2_SUBNET_ID }}
+          security-group-id: ${{ env.EC2_SECURITY_GROUP_ID }}
+          market-type: spot
+
+  # ─────────────────────────────────────────────────────────────
+  # JOB 2: Build the image ON the instance and run the tests
+  # ─────────────────────────────────────────────────────────────
+  run-tests:
+    name: Run tests on Spot instance
+    needs: start-runner
+    runs-on: ${{ needs.start-runner.outputs.label }}   # runs ON the EC2 spot box
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image on the instance
+        run: docker build -t mytests:local .
+
+      - name: Run tests (dynamic suite + env)
+        run: |
+          docker run --rm \
+            -v ${PWD}/allure-results:/app/allure-results \
+            mytests:local \
+            clean test \
+              -DsuiteXmlFile=src/test/resources/suites/${{ inputs.suite }} \
+              -Denv=${{ inputs.env }}
+
+      - name: Upload allure-results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+          retention-days: 1
+
+  # ─────────────────────────────────────────────────────────────
+  # JOB 3: Generate the Allure report, keep last 30, publish to Pages
+  # (runs on a normal GitHub runner, not the Spot instance)
+  # ─────────────────────────────────────────────────────────────
+  report:
+    name: Publish Allure report
+    needs: run-tests
+    runs-on: ubuntu-latest
+    if: always()   # publish a report even if tests failed
+    steps:
+      - name: Download allure-results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name: Load previous gh-pages history
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Generate Allure report (with history, keep last 30)
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_history: allure-history
+          keep_reports: 30
+
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+
+  # ─────────────────────────────────────────────────────────────
+  # JOB 4: Terminate the Spot instance (ALWAYS runs)
+  # ─────────────────────────────────────────────────────────────
+  stop-runner:
+    name: Stop EC2 Spot runner
+    needs: [start-runner, run-tests]
+    runs-on: ubuntu-latest
+    if: always()   # MUST always run, or Spot cost leaks
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Stop EC2 Spot runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.GH_PAT }}
+          label: ${{ needs.start-runner.outputs.label }}
+          ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
+		  
+		  
+		  
