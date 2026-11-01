@@ -1,0 +1,1 @@
+[{"values":["http://64.227.160.186:9000/v1"],"name":"BASE_URI"},{"values":["/usr/lib/jvm/temurin-17-jdk-amd64"],"name":"JAVA_PATH"},{"values":["7.0.0-1017-azure"],"name":"OS_VERSION"},{"values":["Linux"],"name":"OS_NAME"},{"values":["qa"],"name":"ENV"},{"values":["17.0.21"],"name":"JAVA_VERSION"}]
